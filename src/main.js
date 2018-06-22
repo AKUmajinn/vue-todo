@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
+import VueResource from 'vue-resource'
 
 export var bus = new Vue({
   methods: {
@@ -8,6 +9,9 @@ export var bus = new Vue({
     }
   }
 });
+
+Vue.use(VueResource);
+Vue.http.options.root = 'https://akuma-vue-todo.firebaseio.com'
 
 new Vue({
   el: '#app',

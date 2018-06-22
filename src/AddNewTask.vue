@@ -13,7 +13,7 @@
 </template>
 <script>
   import { bus } from './main.js'
-
+  import { db } from './main.js';
   export default {
     data() {
       return {
@@ -30,11 +30,21 @@
             completada: false
           })
 
+         /* db.ref('tasks/').push({
+            titulo: texto,
+            completada: false
+          });*/
+
           ///this.upCounter();
           bus.upCounter(this.tasks.length)
 
         }
         this.nuevaTarea ="";
+        //.$http lo trae exclusivamente vue-resource, tasks.json es inventado, el .post() necesita un nodo para recibir la data
+        this.$http.post('tasks.json', {
+          titulo: texto,
+          completada: false
+        }).then(response => console.log(response));
       }
     },
     created(){

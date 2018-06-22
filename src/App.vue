@@ -30,31 +30,29 @@
     data() {
       return {
         pageTitle: 'To Do App',
-        tasks: [
-          {
-            titulo: 'Trabajar',
-            completada: false
-          },
-          {
-            titulo: 'GYM',
-            completada: false
-          },
-          {
-            titulo: 'Limpiar',
-            completada: false
-          },
-          {
-            titulo: 'Dormir',
-            completada: false
-          }
-        ],
-
+        tasks: [],
       }
     },
     methods: {
       upCounter(){
         this.numTask++;
       }
+    },
+    created(){
+      this.$http.get('tasks.json')
+      .then(response => {
+        return response.json();
+      })
+      .then(responseJson => {
+        for(let id in responseJson){
+          let task = {
+            id: id,
+            titulo: responseJson[id].titulo,
+            completada: responseJson[id].terminada
+          }
+          this.tasks.push(task)
+        }
+      })
     }
   }
 </script>

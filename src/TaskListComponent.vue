@@ -21,7 +21,7 @@
         </div>
       </div>
       <div class="buttons field is-grouped is-grouped-right card-content">
-        <a v-on:click=" task.completada = !task.completada "
+        <a v-on:click=" stateTask(indice) "
         class="button is-small  is-success" href="#">
         Completar/Rehacer
           <span class="icon is-small">
@@ -58,11 +58,29 @@ export default {
     }
   },
   methods: {
+    stateTask(indice){
+      let completada = this.tasks[indice].completada = !this.tasks[indice].completada
+      let id = this.tasks[indice].id;
+
+        this.$http.patch('tasks/' + id + '.json', {
+          completada: completada
+        }).then(response => {console.log(id)})
+      },
     eliminarTarea (indice) {
+      let id = this.tasks[indice].id;
       this.tasks.splice(indice,1);
+
+      this.$http.delete('tasks/' + id + '.json').then(response => {console.log(response)})
+
     },
     editaTarea (tarea) {
       console.log(tarea);
+      let titulo = this.tasks[indice].titulo = !this.tasks[indice].titulo
+      let id = this.tasks[indice].id;
+      this.$http.patch('tasks/' + id + '.json', {
+          titulo: titulo
+      }).then(response => {response})
+
     }
   }
 }
@@ -76,25 +94,18 @@ ul.c-task-list {
   list-style: none;
   margin: 0;
 }
-
 .c-task-list .card {
   margin-bottom: 1em;
 }
-
 .c-task-list .card .card-header {
   flex-direction: column;
-
 }
-
 .c-task-list .card .card-header .field {
   padding: 0 .75rem;
 }
-
-
 .c-task-list .c-task-list--item__complete .c-task-list--title{
   text-decoration: line-through;
   color: grey;
   font-style: italic;
 }
-
 </style>
