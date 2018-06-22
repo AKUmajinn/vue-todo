@@ -3,7 +3,7 @@
     <div class="content">
       <div class="columns">
         <div class="column is-6 is-offset-3 c-to-Do">
-          <page-title v-bind:pageTitle="pageTitle"></page-title>
+          <page-title v-bind:pageTitle="pageTitle" v-bind:tasks="tasks"></page-title>
           <add-new-task v-bind:tasks="tasks"
                         v-bind:upCounter="upCounter">
           </add-new-task>
@@ -39,6 +39,7 @@
       }
     },
     created(){
+
       this.$http.get('tasks.json')
       .then(response => {
         return response.json();

@@ -7,11 +7,11 @@
         <div v-show="editandoTarea == indice"
           class="field has-addons">
           <div class="control is-expanded">
-            <input v-model="task.titulo" v-on:blur="editandoTarea = null, editaTarea(task)"
+            <input v-model="task.titulo" v-on:blur="editandoTarea = null, editarTarea(task, indice)"
             type="text" class="input">
           </div>
           <div class="control">
-            <a v-on:click="editandoTarea = null, editaTarea(task)"
+            <a v-on:click="editandoTarea = null, editarTarea(task, indice)"
               class="button is-info">
               <span class="icon is-small">
                 <i class="fas fa-save"></i>
@@ -73,10 +73,11 @@ export default {
       this.$http.delete('tasks/' + id + '.json').then(response => {console.log(response)})
 
     },
-    editaTarea (tarea) {
-      console.log(tarea);
-      let titulo = this.tasks[indice].titulo = !this.tasks[indice].titulo
+    editarTarea (tarea, indice) {
+      let titulo = tarea
       let id = this.tasks[indice].id;
+      console.log(titulo);
+
       this.$http.patch('tasks/' + id + '.json', {
           titulo: titulo
       }).then(response => {response})

@@ -8,7 +8,7 @@
 import { bus } from './main.js'
 
 export default {
-  props:['pageTitle'],
+  props:['pageTitle', 'tasks'],
   data(){
     return {
       numTask: 0
