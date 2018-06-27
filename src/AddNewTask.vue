@@ -1,8 +1,8 @@
 <template>
-  <form @submit.prevent="addNewTask(nuevaTarea)"
+  <form @submit.prevent="addNewTask(newTask)"
         class="field has-addons">
   <p class="control is-expanded">
-    <input v-model="nuevaTarea"
+    <input v-model="newTask"
             type="text" class="input">
   </p>
   <div class="control">
@@ -12,43 +12,24 @@
 
 </template>
 <script>
-  import { bus } from './main.js'
-  import { db } from './main.js';
+  //import { bus } from './main.js'
   export default {
     data() {
       return {
-        nuevaTarea:''
+        newTask:''
       }
     },
-    props: ['tasks'],
+    computed: {
+      tasks(){
+        return this.$store.state.tasks;
+      }
+    },
     methods: {
       addNewTask() {
-        var texto = this.nuevaTarea.trim();
-        if(texto){
-          this.tasks.push({
-            titulo: texto,
-            completada: false
-          })
-
-         /* db.ref('tasks/').push({
-            titulo: texto,
-            completada: false
-          });*/
-
-          ///this.upCounter();
-          bus.upCounter(this.tasks.length)
-
-        }
-        this.nuevaTarea ="";
-        //.$http lo trae exclusivamente vue-resource, tasks.json es inventado, el .post() necesita un nodo para recibir la data
-        this.$http.post('tasks.json', {
-          titulo: texto,
-          completada: false
-        }).then(response => console.log(response));
+        var text = this.newTask.trim()
+        this.$store.dispatch('addNewTask', text);
+        this.newTask ="";
       }
-    },
-    created(){
-      bus.upCounter(this.tasks.length)
     }
   }
 </script>

@@ -1,17 +1,18 @@
 <template>
+
   <ul class="c-task-list">
-    <li v-for="(task, indice) of tasks" v-bind:class=" {'c-task-list--item__complete': task.completada} "
+    <li v-for="(task, index) in tasks" v-bind:class=" {'c-task-list--item__complete': task.completed} "
     class="card c-task-list--item"  type="">
       <div class="card-header">
-        <p class="card-header-title c-task-list--title"> {{task.titulo}} </p>
-        <div v-show="editandoTarea == indice"
+        <p class="card-header-title c-task-list--title"> {{task.title}} </p>
+        <div v-show="editingTask == index"
           class="field has-addons">
           <div class="control is-expanded">
-            <input v-model="task.titulo" v-on:blur="editandoTarea = null, editarTarea(task, indice)"
+            <input v-model="task.title" v-on:blur="editingTask = null, editTask(task.title, index)"
             type="text" class="input">
           </div>
           <div class="control">
-            <a v-on:click="editandoTarea = null, editarTarea(task, indice)"
+            <a v-on:click="editingTask = null, editTask(task.title, index)"
               class="button is-info">
               <span class="icon is-small">
                 <i class="fas fa-save"></i>
@@ -21,24 +22,24 @@
         </div>
       </div>
       <div class="buttons field is-grouped is-grouped-right card-content">
-        <a v-on:click=" stateTask(indice) "
+        <a v-on:click=" stateTask(index) "
         class="button is-small  is-success" href="#">
         Completar/Rehacer
           <span class="icon is-small">
-            <i v-if="!task.completada"
+            <i v-if="!task.completed"
               class="fas fa-check"></i>
             <i v-else
               class="fas fa-redo-alt"></i>
           </span>
         </a>
-        <a v-on:click="eliminarTarea(indice)"
+        <a v-on:click="deleteTask(index)"
         class="button is-small is-danger" href="#">
           Borrar
           <span class="icon is-small">
             <i class="far fa-trash-alt"></i>
           </span>
         </a>
-        <a v-on:click="editandoTarea = indice"
+        <a v-on:click="editingTask = index"
         class="button is-small" href="#">
           Editar
           <span class="icon is-small">
@@ -51,37 +52,25 @@
 </template>
 <script>
 export default {
-  props: ['tasks'],
   data(){
     return {
-      editandoTarea: null
+      editingTask: null
+    }
+  },
+  computed: {
+    tasks(){
+      return this.$store.state.tasks;
     }
   },
   methods: {
-    stateTask(indice){
-      let completada = this.tasks[indice].completada = !this.tasks[indice].completada
-      let id = this.tasks[indice].id;
-
-        this.$http.patch('tasks/' + id + '.json', {
-          completada: completada
-        }).then(response => {console.log(id)})
-      },
-    eliminarTarea (indice) {
-      let id = this.tasks[indice].id;
-      this.tasks.splice(indice,1);
-
-      this.$http.delete('tasks/' + id + '.json').then(response => {console.log(response)})
-
+    stateTask(index){
+      this.$store.dispatch('stateTask', index);
     },
-    editarTarea (tarea, indice) {
-      let titulo = tarea
-      let id = this.tasks[indice].id;
-      console.log(titulo);
-
-      this.$http.patch('tasks/' + id + '.json', {
-          titulo: titulo
-      }).then(response => {response})
-
+    deleteTask (index) {
+      this.$store.dispatch('deleteTask', index);
+    },
+    editTask (task, index) {
+      this.$store.dispatch('editTask', {task, index});
     }
   }
 }

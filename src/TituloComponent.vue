@@ -1,23 +1,32 @@
 <template>
   <h1> {{ pageTitle }}
-    <small>Tareas a hacer: {{ numTask }}</small>
+    <small>Tareas a hacer: {{ counter }}</small>
   </h1>
 
 </template>
 <script>
-import { bus } from './main.js'
-
 export default {
-  props:['pageTitle', 'tasks'],
-  data(){
-    return {
-      numTask: 0
+  props:['pageTitle'],
+  computed: {
+    tasks() {
+      return this.$store.state.tasks;
+    },
+    counter() {
+      return this.$store.getters.counter
     }
   },
-  created(){
-    bus.$on('upCounter', (numTask)=>{
-      this.numTask = numTask;
-    })
+  data() {
+    return {
+      count: 0
+    }
+  },
+  methods: {
+    counter() {
+      this.$store.commit('counter');
+    }
+  },
+  created() {
+    //console.log(tasks);
   }
 }
 </script>
