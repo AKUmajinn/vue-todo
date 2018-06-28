@@ -67,12 +67,11 @@ export const store = new Vuex.Store({
           completed: false
         })
       }
-      state.newTask ="";
       //.http lo trae exclusivamente vue-resource, tasks.json es creado ahi, el .post() necesita un nodo para recibir la data
       Vue.http.post('tasks.json', {
         title: text,
         completed: false
-      }).then(response => console.log(response));
+      }).then(response => console.log(completed));
     }
   },
   actions: {
