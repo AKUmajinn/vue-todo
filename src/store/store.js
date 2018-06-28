@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+//import { database } from '../firebase.config'
+
 /*import config from '../firebase.config';
 import Firebase from 'Firebase';*/
 //Firebase.initializeApp(config);
@@ -8,24 +10,7 @@ Vue.use(Vuex);
 export const store = new Vuex.Store({
   state: {
     //db: Firebase.database()
-    tasks : [
-      {
-        title: 'Trabajar',
-        completed: false
-      },
-      {
-        title: 'GYM',
-        completed: false
-      },
-      {
-        title: 'Limpiar',
-        completed: false
-      },
-      {
-        title: 'Dormir',
-        completed: false
-      }
-    ]
+    tasks:[]
   },
   getters:{
     //llamado en TitleComponent
@@ -34,38 +19,45 @@ export const store = new Vuex.Store({
     }
   },
   mutations: {
+    getFirebaseData(state) {
+      Vue.http.get('tasks.json')
+      .then(response => {
+        return response.json();
+      })
+      .then(responseJson => {
+        console.log('2sa');
+        for(let id in responseJson){
+          let task = {
+            id: id,
+            title: responseJson[id].title,
+            completed: responseJson[id].terminada
+          }
+          state.tasks.push(task)
+        }
+      })
+    },
     stateTask(state, index){
-      state.tasks[index].completed = !state.tasks[index].completed;
+      let completed = state.tasks[index].completed = !state.tasks[index].completed
+      let id =  state.tasks[index].id;
 
-      //******codigo antiguo que modificaba directo en firebase con vue-resource******
-      //--------------------------------------------------------------
-      /*let completed = this.tasks[index].completed = !this.tasks[index].completed
-      let id = this.tasks[index].id;
-
-        this.$http.patch('tasks/' + id + '.json', {
-          completed: completed
-        }).then(response => {console.log(id)})*/
+      //conecta a firebase con vue resourse, en store no usar this. en cambio usar Vue. parapara hacer referencia al object Vue general y no a Vuex
+      Vue.http.patch('tasks/' + id + '.json', {
+        completed: completed
+      }).then(response => {console.log(state.tasks[index])})
     },
     deleteTask(state, index){
+      let id = state.tasks[index].id;
       state.tasks.splice(index,1);
-
-    //******codigo antiguo que modificaba directo en firebase con vue-resource******
-      //--------------------------------------------------------------
-      /*let id = this.tasks[index].id;
-      this.tasks.splice(index,1);
-      this.$http.delete('tasks/' + id + '.json').then(response => {console.log(response)})*/
+      Vue.http.delete('tasks/' + id + '.json').then(response => {console.log(response)})
     },
     editTask(state, {task, index}){
-      state.tasks[index].title = task;
+      let id = state.tasks[index].id;
+      let title = state.tasks[index].title = task;
+      console.log(title);
 
-    //******codigo antiguo que modificaba directo en firebase con vue-resource******
-    //--------------------------------------------------------------------
-    /*let id = this.tasks[index].id;
-    console.log(title);
-
-    this.$http.patch('tasks/' + id + '.json', {
-        title: title
-    }).then(response => {response})*/
+      Vue.http.patch('tasks/' + id + '.json', {
+          title: title
+      }).then(response => {response})
 
     },
     addNewTask(state, text) {
@@ -75,21 +67,12 @@ export const store = new Vuex.Store({
           completed: false
         })
       }
-    //******codigo antiguo que modificaba directo en firebase con vue-resource******
-    //--------------------------------------------------------------------
-    /*;
-      if(texto){
-        this.tasks.push({
-          titulo: texto,
-          completada: false
-        })
-      }
-      this.newTask ="";
-      //.$http lo trae exclusivamente vue-resource, tasks.json es inventado, el .post() necesita un nodo para recibir la data
-      this.$http.post('tasks.json', {
-        titulo: texto,
-        completada: false
-      }).then(response => console.log(response));*/
+      state.newTask ="";
+      //.http lo trae exclusivamente vue-resource, tasks.json es creado ahi, el .post() necesita un nodo para recibir la data
+      Vue.http.post('tasks.json', {
+        title: text,
+        completed: false
+      }).then(response => console.log(response));
     }
   },
   actions: {
@@ -108,9 +91,11 @@ export const store = new Vuex.Store({
     addNewTask(context, text) {
     //llamado en TitleComponent
       context.commit('addNewTask', text);
+    },
+    //llamado en App.vue para que se cargue ni bien es creada la APP y traiga la data
+    getFirebaseData(context) {
+      context.commit('getFirebaseData');
     }
-
-
   }
 
 })

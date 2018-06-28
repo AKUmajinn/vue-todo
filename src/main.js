@@ -1,16 +1,17 @@
 import Vue from 'vue'
 import App from './App.vue'
+import VueResource from 'vue-resource'
 import { store } from './store/store.js'
 
-//import { store } from 'vue-resource'
-/*
-export var bus = new Vue({
-  methods: {
-    upCounter(numTask){
-      this.$emit('upCounter', numTask);
-    }
-  }
-});*/
+
+
+Vue.use(VueResource);
+Vue.http.options.root = 'https://akuma-vue-todo.firebaseio.com'
+
+
+/*import Firebase from 'Firebase'
+import config from '../config'*/
+//Firebase.initializeApp(config)
 
 new Vue({
   store:store,

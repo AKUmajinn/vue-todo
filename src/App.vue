@@ -3,8 +3,7 @@
     <div class="columns">
       <div class="column is-6 is-offset-3 c-to-Do">
         <page-title v-bind:pageTitle="pageTitle"></page-title>
-        <add-new-task v-bind:upCounter="upCounter">
-        </add-new-task>
+        <add-new-task></add-new-task>
         <task-list></task-list>
 
       </div>
@@ -26,16 +25,11 @@
     },
     data() {
       return {
-        pageTitle: 'To Do App',
-        tasks: [],
-      }
-    },
-    methods: {
-      upCounter(){
-        this.numTask++;
+        pageTitle: 'To Do App'
       }
     },
     created(){
+      this.$store.dispatch('getFirebaseData');
       /*this.$http.get('tasks.json')
       .then(response => {
         return response.json();
@@ -50,7 +44,6 @@
           this.tasks.push(tasks)
         }
       })*/
-      console.log(this.$store.state.db)
     }
   }
 </script>
