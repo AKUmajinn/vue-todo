@@ -28,22 +28,11 @@
         pageTitle: 'To Do App'
       }
     },
-    created(){
+    mounted(){
       this.$store.dispatch('getFirebaseData');
-      /*this.$http.get('tasks.json')
-      .then(response => {
-        return response.json();
-      })
-      .then(responseJson => {
-        for(let id in responseJson){
-          let tasks = {
-            id: id,
-            titulo: responseJson[id].titulo,
-            completada: responseJson[id].terminada
-          }
-          this.tasks.push(tasks)
-        }
-      })*/
     }
   }
 </script>
+<style>
+
+</style>

@@ -22,6 +22,7 @@ export const store = new Vuex.Store({
     getFirebaseData(state) {
       Vue.http.get('tasks.json')
       .then(response => {
+        console.log('1');
         return response.json();
       })
       .then(responseJson => {
@@ -71,7 +72,7 @@ export const store = new Vuex.Store({
       Vue.http.post('tasks.json', {
         title: text,
         completed: false
-      }).then(response => console.log(completed));
+      }).then(response => console.log('tarea agregada'));
     }
   },
   actions: {
